@@ -1,0 +1,55 @@
+.board {
+    display: flex;
+    flex-wrap: wrap;
+    width: 360px;
+    height: 360px;
+    position: relative;
+}
+
+.board:before {
+    content: "";
+    height: 320px;
+    width: 5px;
+    background-color: black;
+    position: absolute;
+    top: 20px;
+    left: 120px;
+    box-shadow: 120px 0px
+}
+
+.board:after {
+    content: "";
+    height: 5px;
+    width: 320px;
+    background-color: black;
+    position: absolute;
+    top: 120px;
+    left: 20px;
+    box-shadow: 0 120px;
+}
+
+.cell {
+    font-family: cursive;
+    width: 100px;
+    height: 100px;
+    font-size: 80px;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: red
+}
+
+#Alert {
+    width: 360px;
+    border-style: solid;
+    height: 360px;
+    position: absolute;
+    top: 0px;
+    font-size: 75px;
+    display: none;
+    background-color: royalblue;
+    text-align: center;
+    line-height: 360px;
+    opacity: 0.9;
+}
