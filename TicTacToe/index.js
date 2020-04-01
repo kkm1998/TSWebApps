@@ -1,24 +1,28 @@
-var TicTacToeGame = /** @class */ (function () {
-    function TicTacToeGame() {
-        var _this = this;
+"use strict";
+class TicTacToeGame {
+    constructor() {
         this.winner = '';
-        this.player = '';
+        this.player = 'X';
+        this.computer = 'O';
         this.board = new Array(9);
         this.counterX = 0;
         this.counterO = 0;
+        this.turn = 0;
         this.AIenabled = false;
+        this.checkIfAIEnabled = document.getElementById("CheckEnabledAI");
+        this.startsCharX = document.getElementById("PlayerXStarts");
+        this.startsCharO = document.getElementById("PlayerOStarts");
+        this.alertBtN = document.getElementById("Alert");
         this.counterOHTML = document.getElementById('LicznikO');
         this.counterXHTML = document.getElementById('LicznikX');
-        this.checkIfAIEnabled = document.getElementById("CheckEnabledAI");
-        this.alertBtN = document.getElementById("Alert");
-        this.alertBtN.addEventListener("click", function () { return _this.StartGame(); });
+        this.alertBtN.addEventListener("click", () => this.StartGame());
         this.cells = document.querySelectorAll('.cell');
-        this.cells.forEach(function (cell) {
-            cell.addEventListener('click', _this.CellClicked.bind(_this));
+        this.cells.forEach(cell => {
+            cell.addEventListener('click', this.CellClicked.bind(this));
         });
     }
-    TicTacToeGame.prototype.CellClicked = function (event) {
-        var index = event.target.id;
+    CellClicked(event) {
+        const index = event.target.id;
         if (!this.board[index]) {
             this.UpdateCell(index, this.player);
             switch (this.AIenabled) {
@@ -29,37 +33,68 @@ var TicTacToeGame = /** @class */ (function () {
                     this.AIMove();
                     break;
                 default:
-                    this.ChangePlayer();
+                    // this.ChangePlayer(event.target)
+                    console.log('Error');
             }
-            this.EndGame();
             this.RenderBoard();
         }
-    };
-    TicTacToeGame.prototype.CheckIfAIEnabled = function () {
-        var _this = this;
-        this.checkIfAIEnabled.addEventListener('click', function () {
-            _this.AIenabled = _this.AIenabled ? false : true;
-            if (_this.AIenabled === false) {
-                _this.checkIfAIEnabled.textContent = 'Czy chcesz grać przeciwko AI';
+    }
+    // WhoseMove() {
+    //     if (this.turn % 2 == 1) {
+    //         console.log('MJ')
+    //     } else {
+    //         console.log('Computer')
+    //         this.bestMove()
+    //     }
+    // }
+    AIMove() {
+        if (this.turn % 2 == 1) {
+            let indexes = [];
+            for (let i = 0; i < this.board.length; i++) {
+                if (this.board[i] === '') {
+                    indexes.push(i);
+                }
+            }
+            const random = indexes[Math.floor(Math.random() * indexes.length)];
+            this.UpdateCell(random, this.computer);
+        }
+    }
+    CheckIfAIEnabled() {
+        this.checkIfAIEnabled.addEventListener('click', () => {
+            this.AIenabled = this.AIenabled ? false : true;
+            if (this.AIenabled === false) {
+                this.checkIfAIEnabled.textContent = 'Czy chcesz grać przeciwko AI';
             }
             else {
-                _this.checkIfAIEnabled.textContent = 'Czy chcesz grać 1vs1';
+                this.checkIfAIEnabled.textContent = 'Czy chcesz grać 1vs1';
             }
-            _this.counterXHTML.textContent = 'Wynik gracza X: 0';
-            _this.counterOHTML.textContent = 'Wynik gracza O: 0';
-            _this.StartGame();
+            this.counterXHTML.textContent = 'Wynik gracza X: 0';
+            this.counterOHTML.textContent = 'Wynik gracza O: 0';
+            this.StartGame();
         });
         return this.AIenabled;
-    };
-    TicTacToeGame.prototype.AIMove = function () {
-        var indexOfFirstPosition = this.board.indexOf('');
-        this.UpdateCell(indexOfFirstPosition, 'O');
-        //this.board[this.counterXHTML] = 'O'
-    };
-    TicTacToeGame.prototype.EndGame = function () {
+    }
+    PlayerXStart() {
+        this.startsCharX.addEventListener('click', () => {
+            this.player = 'X';
+            this.counterXHTML.textContent = 'Wynik gracza X: 0';
+            this.counterOHTML.textContent = 'Wynik gracza O: 0';
+            this.StartGame();
+        });
+    }
+    PlayerOStart() {
+        this.startsCharO.addEventListener('click', () => {
+            this.player = 'O';
+            this.counterXHTML.textContent = 'Wynik gracza X: 0';
+            this.counterOHTML.textContent = 'Wynik gracza O: 0';
+            this.StartGame();
+        });
+    }
+    EndGame() {
         if (this.CheckIfWinned()) {
             this.alertBtN.style.display = 'block';
             this.alertBtN.textContent = 'Winner: ' + this.winner;
+            this.turn = 0;
             switch (this.winner) {
                 case 'X':
                     this.counterX++;
@@ -77,59 +112,65 @@ var TicTacToeGame = /** @class */ (function () {
             this.alertBtN.style.display = 'block';
             this.alertBtN.textContent = 'Remis';
         }
-    };
-    TicTacToeGame.prototype.CheckIfThereArePlaces = function () {
+    }
+    CheckIfThereArePlaces() {
         return this.board.indexOf('') === -1;
-    };
-    TicTacToeGame.prototype.UpdateCell = function (index, value) {
+    }
+    UpdateCell(index, value) {
         this.board[index] = value;
-    };
-    TicTacToeGame.prototype.ChangePlayer = function () {
+        this.turn++;
+        this.EndGame();
+    }
+    ChangePlayer() {
         this.player = this.player === 'O' ? 'X' : 'O';
-    };
-    TicTacToeGame.prototype.StartGame = function () {
+    }
+    StartGame() {
+        console.log(this.player, this.computer);
         this.alertBtN.style.display = 'none';
-        // this.player = Math.floor(Math.random() * 10) % 2 ? 'X' : 'O'  
-        this.player = 'X';
+        // this.player = Math.floor(Math.random() * 10) % 2 ? 'X' : 'O'
+        if (this.player === 'O')
+            this.computer = 'X';
+        else
+            this.computer = 'O';
         this.board.fill('');
         this.RenderBoard();
-    };
-    TicTacToeGame.prototype.RenderBoard = function () {
-        var _this = this;
-        this.cells.forEach(function (cell, index) {
-            cell.innerHTML = _this.board[index];
+    }
+    RenderBoard() {
+        this.cells.forEach((cell, index) => {
+            cell.innerHTML = this.board[index];
         });
-    };
-    TicTacToeGame.prototype.CheckIfWinned = function () {
-        var board = this.board;
-        for (var i = 2; i >= 0; i--) {
+    }
+    CheckIfWinned() {
+        const board = this.board;
+        for (let i = 2; i >= 0; i--) {
             if (this.CheckFormula(board[i * 3], board[i * 3 + 1], board[i * 3 + 2])) {
-                this.winner = board[i * 3];
+                this.winner = board[i * 3 + 2];
                 return true;
             }
         }
-        for (var i = 2; i >= 0; i--) {
+        for (let i = 2; i >= 0; i--) {
             if (this.CheckFormula(board[i], board[i + 3], board[i + 6])) {
-                this.winner = board[i];
+                this.winner = board[i + 6];
                 return true;
             }
         }
         if (this.CheckFormula(board[0], board[4], board[8])) {
-            this.winner = board[0];
+            this.winner = board[8];
             return true;
         }
         if (this.CheckFormula(board[2], board[4], board[6])) {
-            this.winner = board[2];
+            this.winner = board[6];
             return true;
         }
-    };
-    TicTacToeGame.prototype.CheckFormula = function (firstCheckedIndexBoard, secondCheckedIndexBoard, thirdCheckedIndexBoard) {
+    }
+    CheckFormula(firstCheckedIndexBoard, secondCheckedIndexBoard, thirdCheckedIndexBoard) {
         return !!firstCheckedIndexBoard && firstCheckedIndexBoard === secondCheckedIndexBoard && secondCheckedIndexBoard === thirdCheckedIndexBoard && firstCheckedIndexBoard === thirdCheckedIndexBoard;
-    };
-    return TicTacToeGame;
-}());
-window.addEventListener('load', function () {
-    var TTC = new TicTacToeGame();
+    }
+}
+const TTC = new TicTacToeGame();
+window.addEventListener('load', () => {
     TTC.StartGame();
     TTC.CheckIfAIEnabled();
+    TTC.PlayerXStart();
+    TTC.PlayerOStart();
 });

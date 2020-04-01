@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TicTacToe</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" type="image/x-icon" href="icon.png" />
 </head>
 
 <body>
@@ -21,10 +22,16 @@
         <div class="cell" id="8"></div>
     </div>
     <div id="Alert"></div>
-    <p id="LicznikX">Wynik gracza X: 0</p>
-    <p id="LicznikO">Wynik gracza O: 0</p>
-     <button id="CheckEnabledAI">Czy chcesz grać przeciwko AI</button>
-     
+    <div class="Menu">
+        <h3>Kto Zaczyna</h3>
+            <button id="PlayerXStarts" class='charBtN'>X</button>
+            <button id="PlayerOStarts" class='charBtN'>O</button>
+            <p id="LicznikX">Wynik gracza X: 0</p>
+            <p id="LicznikO">Wynik gracza O: 0</p>
+            <button id="CheckEnabledAI">Czy chcesz grać przeciwko AI</button>
+
+    </div>
+
     <script src="index.js"></script>
 </body>
 
