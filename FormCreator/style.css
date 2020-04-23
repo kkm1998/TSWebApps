@@ -1,0 +1,63 @@
+body {
+    background: linear-gradient(90deg, #fcff9e 0%, #c67700 100%);
+}
+
+#Studia {
+    width: auto;
+    height: auto;
+    position: relative;
+    margin-left: 40px;
+    margin-top: 40px;
+}
+
+#Studia>* {
+    margin-bottom: 10px;
+    outline: none;
+    border: 2px solid red;
+    border-radius: 5px;
+    background-color: orange;
+    height: 30px;
+    font-size: larger;
+    width: 250px;
+}
+
+#Studia>*:focus {
+    background-color: tan;
+}
+
+#Send {
+    outline: none;
+    margin-left: 60px;
+    margin-top: 20px;
+    background: linear-gradient(to bottom, #7892c2 5%, #476e9e 100%);
+    background-color: #7892c2;
+    border-radius: 23px;
+    border: 1px solid #4e6096;
+    display: inline-block;
+    cursor: pointer;
+    color: #ffffff;
+    font-family: Trebuchet MS;
+    font-size: 28px;
+    padding: 14px 57px;
+    text-decoration: none;
+}
+
+#Send:hover {
+    background: linear-gradient(to bottom, #476e9e 5%, #7892c2 100%);
+    background-color: #476e9e;
+}
+
+#Send:active {
+    position: relative;
+    top: 1px;
+}
+
+#reset {
+    display: none;
+}
+
+#Output {
+    margin-left: 40px;
+    margin-top: 40px;
+    font-size: x-large;
+}
