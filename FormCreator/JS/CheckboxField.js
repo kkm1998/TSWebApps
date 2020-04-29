@@ -6,7 +6,8 @@ class CheckboxField {
         this.label = label;
         this.element.name = this.name;
         this.type = type;
-        this.element.setAttribute('type', type);
+        this.element.id = this.name;
+        this.element.type = this.type;
     }
     render() {
         return this.element;

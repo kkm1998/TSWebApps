@@ -9,7 +9,8 @@ class CheckboxField implements Field {
         this.label = label;
         this.element.name = this.name;
         this.type = type
-        this.element.setAttribute('type',<string>type)
+        this.element.id = this.name;
+        this.element.type=this.type
     }
     render(): HTMLElement {
         return this.element;

@@ -1,63 +1,153 @@
 body {
-    background: linear-gradient(90deg, #fcff9e 0%, #c67700 100%);
+  background: linear-gradient(to right, #c0392b, #8e44ad);
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 
-#Studia {
-    width: auto;
-    height: auto;
-    position: relative;
-    margin-left: 40px;
-    margin-top: 40px;
+#Form {
+  width: 300px;
+  height: auto;
+  position: relative;
+  margin-left: 30%;
+  margin-top: 5%;
+  background-color: #ffffff;
+  border-radius: 5%;
+  padding: 5%;
+  box-shadow: -2px 7px 21px -6px rgba(0, 0, 0, 0.75);
 }
 
-#Studia>* {
-    margin-bottom: 10px;
-    outline: none;
-    border: 2px solid red;
-    border-radius: 5px;
-    background-color: orange;
-    height: 30px;
-    font-size: larger;
-    width: 250px;
+#Form #reset {
+  display: none;
 }
 
-#Studia>*:focus {
-    background-color: tan;
+#Form #Studia > * {
+  margin-top: 5%;
+  margin-right: 5%;
+  margin-bottom: 5%;
+  margin-left: 10%;
+  outline: none;
+  border-width: 0 0 1px;
+  border-color: grey;
+  height: 30px;
+  font-size: larger;
+  width: 258px;
 }
 
-#Send {
-    outline: none;
-    margin-left: 60px;
-    margin-top: 20px;
-    background: linear-gradient(to bottom, #7892c2 5%, #476e9e 100%);
-    background-color: #7892c2;
-    border-radius: 23px;
-    border: 1px solid #4e6096;
-    display: inline-block;
-    cursor: pointer;
-    color: #ffffff;
-    font-family: Trebuchet MS;
-    font-size: 28px;
-    padding: 14px 57px;
-    text-decoration: none;
+#Form #Studia > *:focus {
+  border-color: black;
 }
 
-#Send:hover {
-    background: linear-gradient(to bottom, #476e9e 5%, #7892c2 100%);
-    background-color: #476e9e;
+#Form #Studia textarea {
+  min-height: 100px;
+  max-height: 300px;
+  max-width: 258px;
+  min-width: 258px;
 }
 
-#Send:active {
-    position: relative;
-    top: 1px;
+#Form #Studia textarea::placeholder {
+  font-size: xx-large;
 }
 
-#reset {
-    display: none;
+#Form #Send,
+#Form #Save {
+  outline: none;
+  margin-left: 60px;
+  margin-top: 20px;
+  background: linear-gradient(to right, #c0392b, #8e44ad);
+  border-radius: 23px;
+  border: none;
+  display: inline-block;
+  cursor: pointer;
+  color: #ffffff;
+  font-family: Trebuchet MS;
+  font-size: 28px;
+  padding: 14px 57px;
+  text-decoration: none;
+  box-shadow: -2px 7px 21px -6px rgba(0, 0, 0, 0.75);
+}
+
+#Form #Send:hover,
+#Form #Save:hover {
+  background: linear-gradient(to left, #c0392b, #8e44ad);
+}
+
+#Form #Send:active,
+#Form #Save:active {
+  position: relative;
+  top: 1px;
+}
+
+#Form #Save {
+  display: none;
 }
 
 #Output {
-    margin-left: 40px;
-    margin-top: 40px;
-    font-size: x-large;
+  margin-top: 10%;
+  background-color: white;
+  width: 1200px;
+  margin-left: 2%;
+  border-radius: 23px;
+  box-shadow: -2px 7px 21px -6px rgba(0, 0, 0, 0.75);
+  max-height: 600px;
+  overflow-y: auto;
+  transition: opacity 1s ease-out;
+  opacity: 0;
+}
+
+#Output #Output_Table {
+  width: 100%;
+  margin-right: 0px;
+  border-collapse: collapse;
+  border-radius: 23px;
+  display: none;
+}
+
+#Output #Output_Table #heading {
+  border-radius: 23px;
+  color: white;
+}
+
+#Output #Output_Table #heading th:first-of-type {
+  border-top-left-radius: 22px;
+}
+
+#Output #Output_Table #heading th:last-of-type {
+  border-top-right-radius: 22px;
+}
+
+#Output #Output_Table #heading th {
+  background-color: #36304a;
+}
+
+#Output #Output_Table th {
+  padding-bottom: 3%;
+  padding-top: 3%;
+}
+
+#Output #Output_Table th #Edit,
+#Output #Output_Table th #del {
+  width: 32px;
+  height: 32px;
+  margin-left: 10px;
+  margin-right: 10px;
+  transition: transform 0.5s;
+  outline: none;
+  border: none;
+  background-color: white;
+}
+
+#Output #Output_Table th #Edit:hover,
+#Output #Output_Table th #del:hover {
+  transform: rotate(30deg);
+}
+
+#Output #Output_Table th #Edit {
+  background-image: url(img/Edit.png);
+}
+
+#Output #Output_Table th #Edit:active {
+  opacity: 0.1;
+}
+
+#Output #Output_Table th #del {
+  background-image: url(img/Delete.png);
 }

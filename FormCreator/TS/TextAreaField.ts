@@ -7,10 +7,11 @@ class TextAreaField implements Field {
         this.element = <HTMLTextAreaElement>document.createElement('textarea');
         this.name = name;
         this.label = label;
-        this.element.name = this.name;
         this.type = type
-        this.element.setAttribute('type',<string>type)
-        this.element.setAttribute('placeholder',label)
+        this.element.name = this.name;
+        this.element.id = this.name;
+        this.element.placeholder=this.label
+        this.element.setAttribute('type',<string>this.type)
     }
     render(): HTMLElement {
         return this.element;
