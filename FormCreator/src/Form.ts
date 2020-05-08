@@ -1,5 +1,5 @@
-import {Field} from './Field'
-import {FieldType} from './FieldType'
+import { Field } from './Field'
+import { FieldType } from './FieldType'
 import { InputField } from './InputField';
 import { EmailField } from './EmailField';
 import { SelectField } from './SelectField';
@@ -16,19 +16,26 @@ export class Form {
     sendButton = <HTMLElement>document.getElementById('Send')
     saveButton = <HTMLElement>document.getElementById('Save')
     id: string
+    focusedRow!: HTMLTableRowElement;
+    _storage: Array<string> = [];
+
     constructor(id: string) {
         this.id = id
         this.fields = new Array();
         this.formValues = new Array();
         this.formElement = document.getElementById(id) as HTMLElement;
-        this.sendButton.addEventListener('click', () => { this.createTable() })
-        this.saveButton.addEventListener('click', () => { this.insertEditedDataToTable(<HTMLTableRowElement>document.getElementById('focused')) })
+        this.sendButton.addEventListener('click', () => {
+            this.getValue()
+            this.createTable()
+        })
+        this.saveButton.addEventListener('click', () => { this.insertEditedDataToTable(this.focusedRow) })
         this.fields.push(new InputField('Imię', 'Imię', FieldType.textBox))
         this.fields.push(new InputField('Nazwisko', 'Nazwisko', FieldType.textBox))
         this.fields.push(new EmailField('EMail', 'E-Mail', FieldType.Email))
         this.fields.push(new SelectField('Kierunek', 'Wybrany kierunek studiów', FieldType.Select, ['IT', 'Rachunkowość', 'Zarządzanie']))
         this.fields.push(new CheckboxField('Elearning', 'Czy preferujesz e-learning', FieldType.Check))
         this.fields.push(new TextAreaField('Uwagi', 'Uwagi', FieldType.TextArea))
+        this.loadTable()
     }
     render(): void {
         const headerForm = document.createElement('p')
@@ -49,13 +56,14 @@ export class Form {
         })
     }
     getValue(): void {
-        this.formValues.length = 0
         this.fields.forEach(element => {
             this.formValues.push(element.getValue())
         })
     }
-    createTable(): void {
-        this.getValue()
+    createTable(row_id?: any): void {
+        let Single = row_id || {
+            row_id: "id_" + new Date().getTime()
+        }
         this.outputTable.style.display = 'inline-table'
         this.outputDiv.style.opacity = '1'
         const row = document.createElement('tr')
@@ -65,38 +73,50 @@ export class Form {
             cell.append(this.formValues[i])
             row.appendChild(cell)
         }
+
+        row_id == undefined ?
+            row.id = Single.row_id
+            :
+            row.id = row_id
         const createButtonCell = document.createElement('th')
         const buttonEditRow = document.createElement('button')
         const buttonDeleteRow = document.createElement('button')
-        //  const Btn_Save = document.createElement('button')
         buttonEditRow.setAttribute('id', 'Edit')
         buttonDeleteRow.setAttribute('id', 'del')
-        // Btn_Save.setAttribute('id', 'saveButton')
-        // Btn_Save.style.display = 'none'
-
-        //Btn_Save.textContent = 'Save'
         createButtonCell.appendChild(buttonEditRow)
         createButtonCell.appendChild(buttonDeleteRow)
-        //createButtonCell.appendChild(Btn_Save)
         row.appendChild(createButtonCell)
         document.getElementById('reset')?.click()
         buttonDeleteRow.addEventListener('click', () => { this.deleteDataFromRow(row) })
-        buttonEditRow.addEventListener('click', () => { this.insertDataToForm(row/*Btn_Save*/) })
-
-        //Btn_Save.addEventListener('click', () => { this.insertEditedDataToTable(row,Btn_Save) })
+        buttonEditRow.addEventListener('click', () => { this.insertDataToForm(row) })
+        if (row_id == undefined) {
+            this._storage.push(JSON.stringify(row.id))
+            this._storage.push(JSON.stringify(this.formValues))
+        }
+        // localStorage.setItem(row.id, JSON.stringify(this.formValues))
+        localStorage.setItem(this.id, JSON.stringify(this._storage))
+        this.formValues.length = 0
 
     }
-    deleteDataFromRow(id: HTMLTableRowElement): void {
-        this.outputTable.removeChild(id)
+    deleteDataFromRow(row: HTMLTableRowElement): void {
+        // localStorage.removeItem(row.id)
+
+        let NotesOptions = JSON.parse(localStorage.getItem(this.id) || '')
+        for (let i = 0; i < NotesOptions.length; i++) {
+
+            if (JSON.parse(NotesOptions[i]) == row.id) {
+                NotesOptions.splice(i,2)
+            }
+        }
+        localStorage.setItem(this.id, JSON.stringify(NotesOptions))
+        this.outputTable.removeChild(row)
     }
-    insertDataToForm(row: HTMLTableRowElement/*,BtN:HTMLElement*/): void {
-      
+    insertDataToForm(row: HTMLTableRowElement): void {
+        this.focusedRow = row
         this.formElement.scrollIntoView(true)
-        row.setAttribute('id', 'focused')
-        row.style.backgroundColor='skyblue'
+        row.style.backgroundColor = 'skyblue'
         this.sendButton.style.display = 'none'
         this.saveButton.style.display = 'inline'
-        //BtN.style.display = 'inline'
         for (let i in this.fields) {
             let getFormElements = document.getElementById(this.fields[i].name) as HTMLFormElement
             this.fields[i].type == 'checkbox' ?
@@ -104,42 +124,30 @@ export class Form {
                 :
                 getFormElements.value = row.children[i].innerHTML
         }
-        // form.Imię.value = row.children[0].innerHTML
-        // form.Nazwisko.value = row.children[1].innerHTML
-        // form.EMail.value = row.children[2].innerHTML
-        // form.Kierunek.value = row.children[3].innerHTML
-        // row.children[4].innerHTML == 'Tak' ? form.Elearning.setAttribute('checked', true) : form.Elearning.removeAttribute('checked')
-        // form.Uwagi.value = row.children[5].innerHTML
     }
-    insertEditedDataToTable(row: HTMLTableRowElement/*,BtN:HTMLElement*/): void {
-        row.style.backgroundColor='white'
+    insertEditedDataToTable(row: HTMLTableRowElement): void {
+        row.style.backgroundColor = 'white'
         this.sendButton.style.display = 'block'
         this.saveButton.style.display = 'none'
         this.getValue()
         for (let i in this.formValues) {
-            row.children[i].innerHTML = this.formValues[i]
+            row.children[i].textContent = this.formValues[i]
         }
-
+        let NotesOptions = JSON.parse(localStorage.getItem(this.id) || '')
+        for (let i = 0; i < NotesOptions.length; i++) {
+            if (JSON.parse(NotesOptions[i]) == row.id) {
+                NotesOptions[i+1] = JSON.stringify(this.formValues)
+            }           
+        }
+        localStorage.setItem(this.id, JSON.stringify(NotesOptions))
+       // localStorage.setItem(row.id, JSON.stringify(this.formValues))
         document.getElementById('reset')?.click()
-        row.id = ''
         row.scrollIntoView(true)
-        // BtN.style.display = 'none'
     }
     Test(): void {
         const z = ['IT', 'Rachunkowość', 'Zarządzanie']
-        const x = ['Tak', 'Nie']
-
-        let i = 100
+        let i = 10000
         while (i-- != 0) {
-            // this.formValues.length = 0
-            // this.formValues.push(Math.random().toString(36).substring(7))
-            // this.formValues.push(Math.random().toString(36).substring(7))
-            // this.formValues.push(Math.random().toString(36).substring(3))
-            // this.formValues.push(z[Math.ceil(Math.random() * 2)])
-            // this.formValues.push(x[Math.round(Math.random())])
-            // this.formValues.push(Math.random().toString(36).substring(1))
-            // this.createTable()
-            // console.log(this.formValues)
             let getFormElements = []
             for (let i in this.fields) {
                 getFormElements.push(document.getElementById(this.fields[i].name) as HTMLFormElement)
@@ -153,5 +161,27 @@ export class Form {
             getFormElements[5].value = Math.random().toString(36).substring(1)
             this.sendButton.click()
         }
+    }
+    loadTable() {
+        if (localStorage.length != 0) {
+            let NotesOptions = JSON.parse(localStorage.getItem(this.id) || '')
+            let key = ''
+            for (let i = 0; i < NotesOptions.length; i++) {
+                if ((i % 2 == 0) == true) {
+                    key = JSON.parse(NotesOptions[i])
+                }
+                else {
+                    this.formValues = JSON.parse(NotesOptions[i])
+                    this._storage.push(JSON.stringify(key))
+                    this._storage.push(JSON.stringify(this.formValues))
+                    this.createTable(key)
+                }
+            }
+        }
+        //  NotesOptions.forEach((element: string) => {
+        //      this.formValues.push(element)
+        //  });
+        //  this.createTable(key);
+
     }
 }
