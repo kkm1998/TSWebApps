@@ -19,18 +19,17 @@ export class Form {
     id: string
     focusedRow!: HTMLTableRowElement;
     _storage: Array<string> = [];
-
     constructor(id: string) {
-
         this.id = id
         this.fields = new Array();
         this.formValues = new Array();
         this.formElement = document.getElementById(id) as HTMLElement;
         this.sendButton.addEventListener('click', () => {
             this.getValue()
-            this.formValues.forEach(element => {
-                this.socket.send(element)
-            });
+            this.socket.send(JSON.stringify(this.formValues))
+            // this.formValues.forEach(element => {
+            //     this.socket.send(element)
+            // });
             this.addRowToTable()
         })
         this.saveButton.addEventListener('click', () => { this.insertEditedDataToTable(this.focusedRow) })
@@ -40,26 +39,27 @@ export class Form {
         this.fields.push(new SelectField('Kierunek', 'Wybrany kierunek studiów', FieldType.Select, ['IT', 'Rachunkowość', 'Zarządzanie']))
         this.fields.push(new CheckboxField('Elearning', 'Czy preferujesz e-learning', FieldType.Check))
         this.fields.push(new TextAreaField('Uwagi', 'Uwagi', FieldType.TextArea))
+        this.fields.push(new SelectField('Kraj', 'Kraj', FieldType.Select, ['Kraje', 'Europe']))
         this.CreateTable()
-        this.outputTable= <HTMLElement>document.getElementById('Output_Table')
+        this.outputTable = <HTMLElement>document.getElementById('Output_Table')
         this.loadTable()
+        this.render()
     }
-    CreateTable():void{
+    CreateTable(): void {
         let table = document.createElement('table')
-        table.id='Output_Table'
+        table.id = 'Output_Table'
         let heading = document.createElement('tr')
-        heading.id='heading'
+        heading.id = 'heading'
         this.fields.forEach(element => {
             let th = document.createElement('th')
-            th.innerText=element.label
+            th.innerText = element.label
             heading.appendChild(th)
         });
         let th = document.createElement('th')
-        th.innerText='Edycja'
+        th.innerText = 'Edycja'
         heading.appendChild(th)
         table.appendChild(heading)
         this.outputDiv.appendChild(table)
-
     }
     render(): void {
         const headerForm = document.createElement('p')
@@ -85,7 +85,6 @@ export class Form {
         })
     }
     addRowToTable(row_id?: any): void {
-
         let Single = row_id || {
             row_id: "id_" + new Date().getTime()
         }
@@ -98,7 +97,6 @@ export class Form {
             cell.append(this.formValues[i])
             row.appendChild(cell)
         }
-
         row_id == undefined ?
             row.id = Single.row_id
             :
@@ -121,14 +119,11 @@ export class Form {
         // localStorage.setItem(row.id, JSON.stringify(this.formValues))
         localStorage.setItem(this.id, JSON.stringify(this._storage))
         this.formValues.length = 0
-
     }
     deleteDataFromRow(row: HTMLTableRowElement): void {
         // localStorage.removeItem(row.id)
-
         let NotesOptions = JSON.parse(localStorage.getItem(this.id) || '')
         for (let i = 0; i < NotesOptions.length; i++) {
-
             if (JSON.parse(NotesOptions[i]) == row.id) {
                 NotesOptions.splice(i, 2)
             }
@@ -187,7 +182,7 @@ export class Form {
             this.sendButton.click()
         }
     }
-    loadTable():void {
+    loadTable(): void {
         if (localStorage.length != 0) {
             let NotesOptions = JSON.parse(localStorage.getItem(this.id) || '')
             let key = ''
@@ -207,6 +202,5 @@ export class Form {
         //      this.formValues.push(element)
         //  });
         //  this.addRowToTable(key);
-
     }
 }
