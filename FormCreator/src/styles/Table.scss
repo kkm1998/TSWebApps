@@ -1,4 +1,5 @@
 @import 'DefaultTheme';
+// @import 'DarkTheme';
 @mixin buttonTable {
     width: 32px;
     height: 32px;
@@ -67,12 +68,12 @@
 
             #Edit {
                 @include buttonTable;
-                background-image: url(/dist/img/Edit.png);
+                background-image: url('/dist/img/Edit.png');
             }
 
             #del {
                 @include buttonTable;
-                background-image: url(/dist/img/Delete.png);
+                background-image: url('/dist/img/Delete.png');
             }
         }
     }

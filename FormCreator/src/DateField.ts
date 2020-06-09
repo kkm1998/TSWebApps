@@ -11,6 +11,7 @@ export class DateField implements Field {
         this.label = label;
         this.type = type
         this.element.name = this.name;
+        this.element.id = this.name;
         this.element.type=this.type
         this.element.placeholder=this.label
     }

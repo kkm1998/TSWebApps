@@ -3,5 +3,6 @@ export enum FieldType {
     Check = 'checkbox',
     Email = 'email',
     Select = 'select',
-    TextArea = 'textarea'
+    TextArea = 'textarea',
+    Date = 'date'
 }

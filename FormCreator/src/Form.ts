@@ -8,6 +8,7 @@ import { TextAreaField } from './TextAreaField';
 import { DateField } from './DateField';
 
 export class Form {
+
     fields: Field[];
     formElement: HTMLElement;
     formValues: Array<string>;
@@ -24,22 +25,16 @@ export class Form {
         this.fields = new Array();
         this.formValues = new Array();
         this.formElement = document.getElementById(id) as HTMLElement;
-        this.sendButton.addEventListener('click', () => {
-            this.getValue()
-            this.socket.send(JSON.stringify(this.formValues))
-            // this.formValues.forEach(element => {
-            //     this.socket.send(element)
-            // });
-            this.addRowToTable()
-        })
+        this.sendButton.addEventListener('click', () => {this.sendFormValuesToServer()})
         this.saveButton.addEventListener('click', () => { this.insertEditedDataToTable(this.focusedRow) })
         this.fields.push(new InputField('Imię', 'Imię', FieldType.textBox))
         this.fields.push(new InputField('Nazwisko', 'Nazwisko', FieldType.textBox))
         this.fields.push(new EmailField('EMail', 'E-Mail', FieldType.Email))
+        this.fields.push(new DateField('Data', 'Data urodzenia', FieldType.Date))
         this.fields.push(new SelectField('Kierunek', 'Wybrany kierunek studiów', FieldType.Select, ['IT', 'Rachunkowość', 'Zarządzanie']))
+        this.fields.push(new SelectField('Kraj', 'Kraj pochodzenia', FieldType.Select, ['Kraje', 'Europe']))
         this.fields.push(new CheckboxField('Elearning', 'Czy preferujesz e-learning', FieldType.Check))
         this.fields.push(new TextAreaField('Uwagi', 'Uwagi', FieldType.TextArea))
-        this.fields.push(new SelectField('Kraj', 'Kraj', FieldType.Select, ['Kraje', 'Europe']))
         this.CreateTable()
         this.outputTable = <HTMLElement>document.getElementById('Output_Table')
         this.loadTable()
@@ -67,6 +62,7 @@ export class Form {
         headerForm.appendChild(document.createTextNode(this.id))
         this.formElement.parentNode?.insertBefore(headerForm, this.formElement)
         this.fields.forEach(element => {
+            console.log(element.render())
             if (element.render().getAttribute('type') == 'checkbox') {
                 let p = document.createElement('p')
                 p.append(element.label)
@@ -80,6 +76,8 @@ export class Form {
         })
     }
     getValue(): void {
+        console.log(this.formValues)
+        this.formValues.length=0
         this.fields.forEach(element => {
             this.formValues.push(element.getValue())
         })
@@ -116,12 +114,10 @@ export class Form {
             this._storage.push(JSON.stringify(row.id))
             this._storage.push(JSON.stringify(this.formValues))
         }
-        // localStorage.setItem(row.id, JSON.stringify(this.formValues))
         localStorage.setItem(this.id, JSON.stringify(this._storage))
         this.formValues.length = 0
     }
     deleteDataFromRow(row: HTMLTableRowElement): void {
-        // localStorage.removeItem(row.id)
         let NotesOptions = JSON.parse(localStorage.getItem(this.id) || '')
         for (let i = 0; i < NotesOptions.length; i++) {
             if (JSON.parse(NotesOptions[i]) == row.id) {
@@ -147,7 +143,7 @@ export class Form {
     }
     insertEditedDataToTable(row: HTMLTableRowElement): void {
         row.style.backgroundColor = 'white'
-        this.sendButton.style.display = 'block'
+        this.sendButton.style.display = 'inline'
         this.saveButton.style.display = 'none'
         this.getValue()
         for (let i in this.formValues) {
@@ -160,27 +156,9 @@ export class Form {
             }
         }
         localStorage.setItem(this.id, JSON.stringify(NotesOptions))
-        // localStorage.setItem(row.id, JSON.stringify(this.formValues))
         document.getElementById('reset')?.click()
+        console.log(this.formValues)
         row.scrollIntoView(true)
-    }
-    Test(): void {
-        const z = ['IT', 'Rachunkowość', 'Zarządzanie']
-        let i = 10
-        while (i-- != 0) {
-            let getFormElements = []
-            for (let i in this.fields) {
-                getFormElements.push(document.getElementById(this.fields[i].name) as HTMLFormElement)
-            }
-            let op = Math.round(Math.random())
-            getFormElements[0].value = Math.random().toString(36).substring(7)
-            getFormElements[1].value = Math.random().toString(36).substring(7)
-            getFormElements[2].value = Math.random().toString(36).substring(3)
-            getFormElements[3].value = z[Math.ceil(Math.random() * 2)]
-            getFormElements[4].value = op == 1 ? getFormElements[4].checked = true : getFormElements[4].checked = false
-            getFormElements[5].value = Math.random().toString(36).substring(1)
-            this.sendButton.click()
-        }
     }
     loadTable(): void {
         if (localStorage.length != 0) {
@@ -198,9 +176,10 @@ export class Form {
                 }
             }
         }
-        //  NotesOptions.forEach((element: string) => {
-        //      this.formValues.push(element)
-        //  });
-        //  this.addRowToTable(key);
+    }
+    sendFormValuesToServer() {
+        this.getValue()
+        this.socket.send(JSON.stringify(this.formValues))
+        this.addRowToTable()
     }
 }

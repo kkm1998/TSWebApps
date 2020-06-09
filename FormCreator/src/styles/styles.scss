@@ -1,5 +1,6 @@
-@import 'Form' , 'Table','DefaultTheme';
-
+@import 'Form' , 'Table';
+@import 'DefaultTheme';
+// @import 'DarkTheme';
 body {
     background: linear-gradient(to right, $gradientColorFirst, $gradientColorSecond);
 }
