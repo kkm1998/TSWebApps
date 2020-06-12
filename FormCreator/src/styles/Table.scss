@@ -69,11 +69,13 @@
             #Edit {
                 @include buttonTable;
                 background-image: url('/dist/img/Edit.png');
+                background-color: $EDIT;
             }
 
             #del {
                 @include buttonTable;
-                background-image: url('/dist/img/Delete.png');
+                background-image: url(/dist/img/Delete.png);
+                background-color: $DEL;
             }
         }
     }

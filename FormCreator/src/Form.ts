@@ -62,7 +62,6 @@ export class Form {
         headerForm.appendChild(document.createTextNode(this.id))
         this.formElement.parentNode?.insertBefore(headerForm, this.formElement)
         this.fields.forEach(element => {
-            console.log(element.render())
             if (element.render().getAttribute('type') == 'checkbox') {
                 let p = document.createElement('p')
                 p.append(element.label)
@@ -76,7 +75,6 @@ export class Form {
         })
     }
     getValue(): void {
-        console.log(this.formValues)
         this.formValues.length=0
         this.fields.forEach(element => {
             this.formValues.push(element.getValue())
